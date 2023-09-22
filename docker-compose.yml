@@ -17,4 +17,4 @@ services: #mendefinisikan service container yaitu berisi item-db dan item-app
       MONGO_INITDB_ROOT_PASSWORD: kjkszpj #menetapkan password mongodb
 
 volumes:
-  app-db:
+  app-db: #membuat volume dengan nama app-db
