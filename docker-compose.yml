@@ -1,0 +1,20 @@
+version: "3.7" #Menggunakan schema version 3.7
+
+services: #mendefinisikan service container yaitu berisi item-db dan item-app
+  item-db: #memberi nama container dengan nama item-db
+    image: mongo:3 #mengambil image mongo:3
+    restart: always #restart policy berisi value always agar container restart ketika proses stop
+    volumes: #mendefinisikan volume
+      - app-db:/data/db #menggunakan penyimpanan dengan tipe volume dengan source app-db dan destionation /data/db
+
+  item-app: #memberi nama container dengan nama item-app
+    image: ghcr.io/cobrasan86/item-app:v1 #mengambil image dari Github Container Registry
+    restart: always #restart policy berisi value always agar container restart ketika proses stop
+    ports: #mendefinikan port untuk host dan container
+      - 80:8080 #port 80 untuk host dan port 8080 untuk container
+    environment: #menetapkan beberapa nilai environment
+      MONGO_INITDB_ROOT_USERNAME: root #menetapkan username mongodb
+      MONGO_INITDB_ROOT_PASSWORD: kjkszpj #menetapkan password mongodb
+
+volumes:
+  app-db:
