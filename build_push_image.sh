@@ -5,7 +5,7 @@
 garis="=================================="
 
 #Melakukan build docker image dari Dockerfile
-#docker build -t item-app:v1 .
+docker build -t item-app:v1 .
 
 #melakukan pause 2 detik dan clear layar
 echo "Loading list docker images..."
