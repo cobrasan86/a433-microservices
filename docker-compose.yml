@@ -15,6 +15,7 @@ services: #mendefinisikan service container yaitu berisi item-db dan item-app
     environment: #menetapkan beberapa nilai environment
       MONGO_INITDB_ROOT_USERNAME: root #menetapkan username mongodb
       MONGO_INITDB_ROOT_PASSWORD: kjkszpj #menetapkan password mongodb
-
+    depends_on:
+      - item-db
 volumes:
   app-db: #membuat volume dengan nama app-db
