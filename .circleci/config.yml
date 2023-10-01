@@ -1,13 +1,9 @@
 version: 2.1
 
-executors:
-  docker:
+jobs:
+  lint-dockerfile:
     docker:
       - image: docker:stable
-
-jobs:
-  lint:
-    executor: docker
     steps:
       - checkout
       - setup_remote_docker
@@ -19,4 +15,4 @@ workflows:
   version: 2
   test:
     jobs:
-      - lint
+      - lint-dockerfile
