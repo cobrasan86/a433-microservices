@@ -18,13 +18,22 @@ jobs:
   test-app:
     working_directory: ~/repo
     docker:
-      - image: ghcr.io/cobrasan86/karsajobs:latest
+      - image: cimg/go:1.15.10
     steps:
       - checkout
-      - setup_remote_docker
+      - restore_cache:
+          keys:
+            - go-mod-v4-{{ checksum "go.sum" }}
       - run:
-          name: Test App
-          command: go test -v -short --count=1 $(go list ./...)
+          name: Install Dependencies
+          command: go get ./...
+      - save_cache:
+          key: go-mod-v4-{{ checksum "go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+      - run:
+          name: Run tests
+          command: go test -v
   
   build-app-karsajobs:
     executor: docker
