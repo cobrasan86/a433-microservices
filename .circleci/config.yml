@@ -16,8 +16,9 @@ jobs:
           command: docker run --rm --interactive hadolint/hadolint < Dockerfile
   
   test-app:
+    working_directory: ~/go/src/github.com/dicodingacademy/karsajobs
     docker:
-      - image: cimg/go:1.15.10
+      - image: ghcr.io/cobrasan86/karsajobs:latest
     steps:
       - checkout
       - restore_cache:
