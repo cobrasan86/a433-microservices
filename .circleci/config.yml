@@ -17,6 +17,6 @@ jobs:
 
 workflows:
   version: 2
-  test:
+  kiwkiw:
     jobs:
       - lint-dockerfile
