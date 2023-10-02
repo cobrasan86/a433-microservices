@@ -14,7 +14,18 @@ jobs:
       - run:
           name: Run hadolint
           command: docker run --rm --interactive hadolint/hadolint < Dockerfile
-
+  
+  test-app:
+    working_directory: ~/repo
+    docker:
+      - image: ghcr.io/cobrasan86/karsajobs:latest
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Test App
+          command: go test -v -short --count=1 $(go list ./...)
+  
   build-app-karsajobs:
     executor: docker
     steps:
@@ -38,4 +49,5 @@ workflows:
   kiwkiw:
     jobs:
       - lint-dockerfile
+      - test-app
       - build-app-karsajobs
