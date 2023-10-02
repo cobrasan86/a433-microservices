@@ -1,41 +1,41 @@
-version: 2.1
+version: 2.1  # Versi konfigurasi GitHub Actions yang digunakan.
 
 executors:
   docker:
     docker:
-      - image: docker:stable
+      - image: docker:stable  # Menggunakan gambar Docker:stable sebagai executor.
 
 jobs:
-  lint-dockerfile:
-    executor: docker
+  lint-dockerfile:  # Pekerjaan ini berfokus pada linting Dockerfile.
+    executor: docker  # Menggunakan executor Docker.
     steps:
-      - checkout
-      - setup_remote_docker
+      - checkout  # Melakukan checkout source code dari repositori.
+      - setup_remote_docker  # Mengatur akses Docker jarak jauh.
       - run:
-          name: Run hadolint
-          command: docker run --rm --interactive hadolint/hadolint < Dockerfile
+          name: Run hadolint  # Nama langkah ini.
+          command: docker run --rm --interactive hadolint/hadolint < Dockerfile  # Menjalankan hadolint untuk memeriksa Dockerfile.
 
-  build-app-karsajobs-ui:
-    executor: docker
+  build-app-karsajobs-ui:  # Pekerjaan ini berfokus pada membangun dan mendorong gambar Docker untuk karsajobs-ui.
+    executor: docker  # Menggunakan executor Docker.
     steps:
-      - checkout
-      - setup_remote_docker
+      - checkout  # Melakukan checkout source code dari repositori.
+      - setup_remote_docker  # Mengatur akses Docker jarak jauh.
       - run:
-          name: Build image
-          command: docker build -t karsajobs-ui:latest .
+          name: Build image  # Nama langkah ini.
+          command: docker build -t karsajobs-ui:latest .  # Membangun gambar Docker dengan tag karsajobs-ui:latest.
       - run:
-          name: Tag Image
-          command: docker image tag karsajobs-ui:latest ghcr.io/cobrasan86/karsajobs-ui:latest
+          name: Tag Image  # Nama langkah ini.
+          command: docker image tag karsajobs-ui:latest ghcr.io/cobrasan86/karsajobs-ui:latest  # Menyematkan tag gambar Docker.
       - run:
-          name: Login Github Packages
-          command: echo $TOKENKU | docker login ghcr.io -u cobrasan86 --password-stdin
+          name: Login Github Packages  # Nama langkah ini.
+          command: echo $TOKENKU | docker login ghcr.io -u cobrasan86 --password-stdin  # Melakukan login ke GitHub Packages.
       - run:
-          name: Push Image ke Github Packages
-          command: docker image push ghcr.io/cobrasan86/karsajobs-ui:latest
-          
+          name: Push Image ke Github Packages  # Nama langkah ini.
+          command: docker image push ghcr.io/cobrasan86/karsajobs-ui:latest  # Mendorong gambar Docker ke GitHub Packages.
+
 workflows:
-  version: 2
+  version: 2  # Versi alur kerja (workflow).
   kiwkiw:
     jobs:
-      - lint-dockerfile
-      - build-app-karsajobs-ui
+      - lint-dockerfile  # Menjalankan tugas lint-dockerfile.
+      - build-app-karsajobs-ui  # Menjalankan tugas build-app-karsajobs-ui.
