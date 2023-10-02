@@ -1,30 +1,30 @@
 version: 2.1
 
-executors:
+executors: #menetapkan executor docker dengan image docker:stable
   docker:
     docker:
       - image: docker:stable
 
 jobs:
-  lint-dockerfile:
+  lint-dockerfile: #berisi proses untuk menginstal hadolint dan menjalankannya terhadap berkas Dockerfile.
     executor: docker
     steps:
       - checkout
       - setup_remote_docker
       - run:
           name: Run hadolint
-          command: docker run --rm --interactive hadolint/hadolint < Dockerfile
+          command: docker run --rm --interactive hadolint/hadolint < Dockerfile #menjalankan hadolint
   
-  test-app:
+  test-app: #berisi perintah untuk menjalankan unit test untuk backend dengan perintah: go test -v -short --count=1 $(go list ./...)
     docker:
       - image: golang:1.15
     steps:
       - checkout
       - run:
           name: Run tests
-          command: go test -v -short --count=1 $(go list ./...)
+          command: go test -v -short --count=1 $(go list ./...) #menjalankan go test
   
-  build-app-karsajobs:
+  build-app-karsajobs: #berisi perintah untuk build dan push image
     executor: docker
     steps:
       - checkout
