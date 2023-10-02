@@ -21,7 +21,7 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
-          name: Build iamge
+          name: Build image
           command: docker build -t karsajobs-ui:latest .
       - run:
           name: Tag Image
