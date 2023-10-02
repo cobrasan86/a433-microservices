@@ -15,8 +15,26 @@ jobs:
           name: Run hadolint
           command: docker run --rm --interactive hadolint/hadolint < Dockerfile
 
+  build-app-karsajobs-ui:
+    executor: docker
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build iamge
+          command: docker build -t karsajobs-ui:latest .
+      - run:
+          name: Tag Image
+          command: docker image tag karsajobs-ui:latest ghcr.io/cobrasan86/karsajobs-ui:latest
+      - run:
+          name: Login Github Packages
+          command: echo $TOKENKU | docker login ghcr.io -u cobrasan86 --password-stdin
+      - run:
+          name: Push Image ke Github Packages
+          command: docker image push ghcr.io/cobrasan86/karsajobs-ui:latest
 workflows:
   version: 2
   kiwkiw:
     jobs:
       - lint-dockerfile
+      - build-app-karsajobs-ui
