@@ -16,14 +16,10 @@ jobs:
           command: docker run --rm --interactive hadolint/hadolint < Dockerfile
   
   test-app:
-    #working_directory: ~/
     docker:
-      - image: golang:1.15-alpine
+      - image: ghcr.io/cobrasan86/karsajobs:latest
     steps:
       - checkout
-      - run:
-          name: Install Dependencies
-          command: go get ./...
       - run:
           name: Run tests
           command: go test -v -short --count=1 $(go list ./...)
