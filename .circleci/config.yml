@@ -19,6 +19,7 @@ jobs:
     working_directory: ~/go/src/github.com/dicodingacademy/karsajobs
     docker:
       - image: ghcr.io/cobrasan86/karsajobs:latest
+      - image: mongo:4.4.3
     steps:
       - checkout
       - restore_cache:
@@ -33,7 +34,7 @@ jobs:
             - "/go/pkg/mod"
       - run:
           name: Run tests
-          command: go test -v
+          command: go test -v -short --count=1 $(go list ./...)
   
   build-app-karsajobs:
     executor: docker
