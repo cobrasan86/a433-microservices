@@ -32,6 +32,7 @@ jobs:
       - run:
           name: Push Image ke Github Packages
           command: docker image push ghcr.io/cobrasan86/karsajobs-ui:latest
+          
 workflows:
   version: 2
   kiwkiw:
