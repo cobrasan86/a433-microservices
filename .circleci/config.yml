@@ -16,9 +16,9 @@ jobs:
           command: docker run --rm --interactive hadolint/hadolint < Dockerfile
   
   test-app:
-    working_directory: ~/go/src/github.com/dicodingacademy/karsajobs
+    working_directory: ~/
     docker:
-      - image: ghcr.io/cobrasan86/karsajobs:latest
+      - image: golang:1.15-alpine
       - image: mongo:4.4.3
     steps:
       - checkout
@@ -31,7 +31,7 @@ jobs:
       - save_cache:
           key: go-mod-v4-{{ checksum "go.sum" }}
           paths:
-            - "/go/pkg/mod"
+            - "/go/pkg/models"
       - run:
           name: Run tests
           command: go test -v -short --count=1 $(go list ./...)
