@@ -16,22 +16,14 @@ jobs:
           command: docker run --rm --interactive hadolint/hadolint < Dockerfile
   
   test-app:
-    working_directory: ~/
+    #working_directory: ~/
     docker:
       - image: golang:1.15-alpine
-      - image: mongo:4.4.3
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - go-mod-v4-{{ checksum "go.sum" }}
       - run:
           name: Install Dependencies
           command: go get ./...
-      - save_cache:
-          key: go-mod-v4-{{ checksum "go.sum" }}
-          paths:
-            - "/go/pkg/models"
       - run:
           name: Run tests
           command: go test -v -short --count=1 $(go list ./...)
