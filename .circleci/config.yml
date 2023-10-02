@@ -16,7 +16,6 @@ jobs:
           command: docker run --rm --interactive hadolint/hadolint < Dockerfile
   
   test-app:
-    working_directory: ~/repo
     docker:
       - image: cimg/go:1.15.10
     steps:
