@@ -1,51 +1,51 @@
-version: 2.1
+version: 2.1  # Versi konfigurasi GitHub Actions yang digunakan.
 
-executors: #menetapkan executor docker dengan image docker:stable
+executors: # Menetapkan executor docker dengan image docker:stable.
   docker:
     docker:
       - image: docker:stable
 
 jobs:
-  lint-dockerfile: #berisi proses untuk menginstal hadolint dan menjalankannya terhadap berkas Dockerfile.
-    executor: docker
+  lint-dockerfile: # Berisi proses untuk menginstal hadolint dan menjalankannya terhadap berkas Dockerfile.
+    executor: docker # Menggunakan executor docker.
     steps:
-      - checkout
+      - checkout # Melakukan checkout source code.
       - setup_remote_docker
       - run:
           name: Run hadolint
-          command: docker run --rm --interactive hadolint/hadolint < Dockerfile #menjalankan hadolint
+          command: docker run --rm --interactive hadolint/hadolint < Dockerfile # Menjalankan hadolint.
   
-  test-app: #berisi perintah untuk menjalankan unit test untuk backend dengan perintah: go test -v -short --count=1 $(go list ./...)
+  test-app: # Berisi perintah untuk menjalankan unit test untuk backend dengan perintah: go test -v -short --count=1 $(go list ./...)
     docker:
       - image: golang:1.15
     steps:
       - checkout
       - run:
           name: Run tests
-          command: go test -v -short --count=1 $(go list ./...) #menjalankan go test
+          command: go test -v -short --count=1 $(go list ./...) # Menjalankan go test.
   
-  build-app-karsajobs: #berisi perintah untuk build dan push image
-    executor: docker
+  build-app-karsajobs: # Berisi perintah untuk build dan push image.
+    executor: docker # Menggunakan executor docker.
     steps:
       - checkout
       - setup_remote_docker
       - run:
           name: Build image
-          command: docker build -t karsajobs:latest .
+          command: docker build -t karsajobs:latest . # Membangun gambar Docker.
       - run:
           name: Tag Image
-          command: docker image tag karsajobs:latest ghcr.io/cobrasan86/karsajobs:latest
+          command: docker image tag karsajobs:latest ghcr.io/cobrasan86/karsajobs:latest # Menyematkan tag gambar Docker.
       - run:
           name: Login Github Packages
-          command: echo $TOKENKU | docker login ghcr.io -u cobrasan86 --password-stdin
+          command: echo $TOKENKU | docker login ghcr.io -u cobrasan86 --password-stdin # Melakukan login ke GitHub Packages.
       - run:
           name: Push Image ke Github Packages
-          command: docker image push ghcr.io/cobrasan86/karsajobs:latest
+          command: docker image push ghcr.io/cobrasan86/karsajobs:latest # Mendorong gambar Docker ke GitHub Packages.
           
 workflows:
-  version: 2
+  version: 2 # Versi alur kerja (workflow).
   kiwkiw:
     jobs:
-      - lint-dockerfile
-      - test-app
-      - build-app-karsajobs
+      - lint-dockerfile # Menjalankan tugas lint-dockerfile.
+      - test-app # Menjalankan tugas test-app.
+      - build-app-karsajobs # Menjalankan tugas build-app-karsajobs.
