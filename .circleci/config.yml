@@ -1,9 +1,13 @@
 version: 2.1
 
-jobs:
-  lint-dockerfile:
+executors:
+  docker:
     docker:
       - image: docker:stable
+
+jobs:
+  lint-dockerfile:
+    executor: docker
     steps:
       - checkout
       - setup_remote_docker
@@ -11,31 +15,27 @@ jobs:
           name: Run hadolint
           command: docker run --rm --interactive hadolint/hadolint < Dockerfile
 
-  test-app:
-    docker:
-      - image: golang:1.15-alpine
+  build-app-karsajobs:
+    executor: docker
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - go-mod-v4-{{ checksum "go.sum" }}
+      - setup_remote_docker
       - run:
-          name: Install Dependencies
-          command: go mod download
-      - save_cache:
-          key: go-mod-v4-{{ checksum "go.sum" }}
-          paths:
-            - "/go/pkg/mod"
+          name: Build image
+          command: docker build -t karsajobs:latest .
       - run:
-          name: Run tests
-          command: |
-            mkdir -p /tmp/test-reports
-            gotestsum --junitfile /tmp/test-reports/unit-tests.xml
-      - store_test_results:
-          path: /tmp/test-reports
+          name: Tag Image
+          command: docker image tag karsajobs:latest ghcr.io/cobrasan86/karsajobs:latest
+      - run:
+          name: Login Github Packages
+          command: echo $TOKENKU | docker login ghcr.io -u cobrasan86 --password-stdin
+      - run:
+          name: Push Image ke Github Packages
+          command: docker image push ghcr.io/cobrasan86/karsajobs:latest
+          
 workflows:
   version: 2
-  test:
+  kiwkiw:
     jobs:
       - lint-dockerfile
-      - test-app
+      - build-app-karsajobs
