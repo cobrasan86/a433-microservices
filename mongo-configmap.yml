@@ -1,0 +1,8 @@
+apiVersion: v1 #Menggunakan API v1(versi 1)
+kind: ConfigMap #Mendefinisikan resource yang digunakan, dalam hal ini berarti menggunakan ConfigMap
+metadata: #Memberikan metadata yang berisi informasi nama
+  name: mongo-config #Menetapkan nama mongo-config
+data:
+  mongo.conf: | #Membuat file konfigurasi dengan nama mongo.conf dan menyimpan ke /data/db
+    storage:
+      dbPath: /data/db
