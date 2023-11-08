@@ -1,0 +1,37 @@
+apiVersion: apps/v1 #Menggunakan API v1(versi 1)
+kind: Deployment #Mendefinisikan resource yang digunakan, dalam hal ini berarti menggunakan Deployment
+metadata: #Memberikan metadata yang berisi informasi nama dan label
+  name: karsajobs-deployment #Menetapkan nama karsajobs-deployment
+  labels:
+    backend: karsajobs #Menetapkan label backend: karsajobs
+spec: #Mendefinisikan resource
+  replicas: 1 #Menetapkan replica dengan jumlah 1
+  selector: #Menetapkan selector
+    matchLabels: #Melakukan match labels dengan nilai backend : karsajobs
+      backend: karsajobs
+  template: #Template berisi metadata
+    metadata: #Metadata yang berisi label dan menetapkan nilai backend: karsajobs
+      labels:
+        backend: karsajobs
+    spec: #Mendefinisikan resource
+      containers: #Menetapkan dan mendefiniskan spesifikasi container
+      - name: karsajobs #Memberikan nama karsajobs
+        imagePullPolicy: IfNotPresent #Menggunakan IfNotPresent artinya menggunakan image yang sudah tersimpan di node, meskipun ada pembaruan image, container akan tetap menggunakan image tersebut tanpa pull pembaruan
+        image: ghcr.io/cobrasan86/karsajobs:latest #Melakukan pull image dari Github Packages
+        ports: #Menetapakan port container dengan port 8080
+          - containerPort: 8080
+        env: #Env variable
+          - name: APP_PORT #Menetapkan nama APP_PORT dengan nilai "8080"
+            value: "8080"
+          - name: MONGO_HOST #Menetapkan nama MONGO_HOST dengan nilai mongo
+            value: mongo
+          - name: MONGO_USER #Menetapkan nama MONGO_USER
+            valueFrom: #Mengambil credentials dari mongo-secret, dan mengambil informasi USERNAME
+              secretKeyRef:
+                name: mongo-credentials
+                key:  MONGO_ROOT_USERNAME #Mengambil informasi USERNAME
+          - name: MONGO_PASS #Menetapkan nama MONGO_PASS
+            valueFrom: #Mengambil credentials dari mongo-secret, dan mengambil informasi PASSWORD
+              secretKeyRef: 
+                name: mongo-credentials
+                key: MONGO_ROOT_PASSWORD #Mengambil informasi PASSWORD
