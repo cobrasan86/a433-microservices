@@ -1,0 +1,22 @@
+apiVersion: apps/v1 #Menggunakan API v1(versi 1)
+kind: Deployment #Mendefinisikan resource yang digunakan, dalam hal ini berarti menggunakan Deployment
+metadata: #Memberikan metadata yang berisi informasi nama dan label
+  name: karsajobsui-deployment #Menetapkan nama karsajobsui-deployment
+  labels:
+    frontend: karsajobsui #Menetapkan label frontend: karsajobsui
+spec: #Mendefinisikan resource
+  replicas: 1 #Menetapkan replica dengan jumlah 1
+  selector: #Menetapkan selector
+    matchLabels:
+      frontend: karsajobsui #Melakukan match labels dengan nilai frontend : karsajobsui
+  template: #Template berisi metadata
+    metadata: #Metadata yang berisi label dan menetapkan nilai frontend: karsajobsui
+      labels:
+        frontend: karsajobsui
+    spec: #Mendefinisikan resource
+      containers: #Menetapkan dan mendefiniskan spesifikasi container
+      - name: karsajobsui #Memberikan nama karsajobsui
+        imagePullPolicy: IfNotPresent #Menggunakan IfNotPresent artinya menggunakan image yang sudah tersimpan di node, meskipun ada pembaruan image, container akan tetap menggunakan image tersebut tanpa pull pembaruan
+        image: ghcr.io/cobrasan86/karsajobs-ui:latest #Melakukan pull image dari Github Packages
+        ports: #Menetapakan port container dengan port 8000
+          - containerPort: 8000

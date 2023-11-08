@@ -1,0 +1,14 @@
+apiVersion: v1 #Menggunakan API v1(versi 1)
+kind: Service #Mendefinisikan resource yang digunakan, dalam hal ini berarti menggunakan Service
+metadata: #Memberikan metadata yang berisi informasi nama dan label
+  name: karsajobsui-service #Menetapkan nama karsajobsui-service
+  labels:
+    frontend: karsajobsui #Menetapkan label frontend: karsajobs
+spec: #Mendefinisikan resource
+  type: NodePort #Menggunakan type NodePort
+  selector: #Melakukan select ke frontend: karsajobs
+    frontend: karsajobsui
+  ports:
+    - port: 8000 #Menetapkan port 8000
+      targetPort: 8000
+      nodePort: 30000 #Menetapkan port NodePort dengan nilai 30000(tidak berubah-ubah)
