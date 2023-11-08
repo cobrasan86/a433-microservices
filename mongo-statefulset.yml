@@ -1,0 +1,59 @@
+apiVersion: apps/v1 #Menggunakan API v1(versi 1)
+kind: StatefulSet #Mendefinisikan resource yang digunakan, dalam hal ini berarti menggunakan StatefulSet
+metadata: #Memberikan metadata yang berisi informasi nama dan label
+  name: mongo #Menetapkan nama mongo
+  labels:
+    app: mongo #Menetapkan label app: mongo
+spec: #Mendefinisikan resource
+  selector: #Menetapkan selector
+    matchLabels: #Melakukan match labels dengan nilai app: mongo
+      app: mongo
+  serviceName: mongo #Mengambil nama Service dari mongo-service
+  replicas: 1 #Menetapkan replica dengan jumlah 1
+  minReadySeconds: 10 #Menetpakan kesiapan minimal dengan durasi 10 detik
+  template: #Template berisi metadata
+    metadata: #Metadata yang berisi label dan menetapkan nilai app: mongo
+      labels:
+        app: mongo
+    spec: #Mendefinisikan resource
+      terminationGracePeriodSeconds: 10 #Memberikan jumlah waktu tenggang sebelum kontainer dihentikan secara paksa ketika ditandai untuk dihapus atau dimulai ulang
+      containers: #Menetapkan dan mendefiniskan spesifikasi container
+      - image: mongo:4.4.3 #Melakukan pull iamge mongo dengan tag 4.4.3
+        name: mongo #Menetapkan namanya menjadi mongo
+        env: #Env Variable
+        - name: MONGO_INITDB_ROOT_USERNAME_FILE
+          value: /etc/mongo-credentials/MONGO_ROOT_USERNAME #Mengambil informasi USERNAME dari /etc/mongo-credentials/MONGO_ROOT_USERNAME
+        - name: MONGO_INITDB_ROOT_PASSWORD_FILE
+          value: /etc/mongo-credentials/MONGO_ROOT_PASSWORD #Mengambil informasi PASSWORD dari /etc/mongo-credentials/MONGO_ROOT_PASSWORD
+        ports:
+        - containerPort: 27017 #Menetapkan port container dengan port 27017
+          name: mongo #Menetapkan nama mongo
+        volumeMounts: #Menetapkan volume mount
+        - name: mongo-persistent-storage #Memberikan nama mongo-persistent-storage
+          mountPath: /data/db #Menggunakan mount path /data/db
+        - name: mongo-config #Mengambil mongo-config
+          mountPath: /config #Dengan mount path /config
+          readOnly: true #Membuatnya hanya bisa dibaca
+        - name: mongo-secret #Mengambil mongo-secret
+          mountPath: /etc/mongo-credentials #Mengambil dari /etc/mongo-credentials
+          readOnly: true #Membuatnya hanya bisa dibaca
+      volumes:
+      - name: mongo-config #Menetapkan mongo-config
+        configMap:
+          name: mongo-config #Mengambil dari mongo-configmap
+          items:
+          - key: mongo.conf #Mengambil mongo.conf
+            path: mongo.conf #Dengan path mongo.conf
+      - name: mongo-persistent-storage #Menetapkan nama mongo-persistent-storage
+        persistentVolumeClaim:
+          claimName: mongo-pv-claim #Melakukan claim storage mengambil dari mongo-pv-pvc
+      - name: mongo-secret #Menetapkan mongo-secret
+        secret:
+          secretName: mongo-credentials #Mengambil mongo-secret
+          items:
+            - key: MONGO_ROOT_USERNAME #Mengambil Username dengan kunci MONGO_ROOT_USERNAME
+              path: MONGO_ROOT_USERNAME #Dari MONGO_ROOT_USERNAME
+              mode: 0444 #Menggunakan permission dengan mode 0444
+            - key: MONGO_ROOT_PASSWORD #Mengambil Username dengan kunci MONGO_ROOT_PASSWORD
+              path: MONGO_ROOT_PASSWORD #Dari MONGO_ROOT_PASSWORD
+              mode: 0444 #Menggunakan permission dengan mode 0444
