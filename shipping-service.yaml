@@ -1,0 +1,25 @@
+apiVersion: apps/v1  # Menentukan versi API yang digunakan untuk objek Deployment.
+kind: Deployment  # Jenis objek yang akan dibuat, yaitu "Deployment."
+metadata:
+  name: shipping-service  # Nama objek Deployment.
+spec:
+  replicas: 1  # Jumlah replika pod yang akan dibuat oleh Deployment, dalam hal ini satu replika.
+  selector:
+    matchLabels:
+      app: shipping-service  # Label yang digunakan untuk memilih pod.
+  template:
+    metadata:
+      labels:
+        app: shipping-service  # Label yang akan diberikan pada pod.
+    spec:
+      containers:
+      - name: shipping-service  # Nama container.
+        image: ghcr.io/cobrasan86/shipping-service:latest  # Image container yang akan digunakan.
+        imagePullPolicy: Always  # Kebijakan penarikan image, selalu melakukan pull
+        ports:
+        - containerPort: 3001  # Port yang akan digunakan dalam container.
+        env:
+          - name: PORT  # Variabel lingkungan untuk port.
+            value: "3001"
+          - name: AMQP_URL  # Variabel lingkungan untuk URL RabbitMQ.
+            value: "amqp://rabbitmq:5672"

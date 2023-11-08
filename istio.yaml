@@ -1,0 +1,35 @@
+apiVersion: networking.istio.io/v1alpha3  # Menentukan versi API yang digunakan untuk objek Gateway di Istio.
+kind: Gateway  # Jenis objek yang akan dibuat, yaitu "Gateway."
+metadata:
+  name: order-service-gateway  # Nama objek Gateway.
+spec:
+  selector:
+    istio: ingressgateway  # Selektor yang digunakan untuk memilih gateway Istio yang akan digunakan.
+  servers:
+  - port:
+      number: 80  # Nomor port yang digunakan untuk lalu lintas masuk.
+      name: http  # Nama port, dalam hal ini "http."
+      protocol: HTTP  # Protokol yang digunakan, dalam hal ini adalah HTTP.
+    hosts:
+    - "*"  # Host yang diterima, dalam hal ini menerima semua host ("*").
+
+---
+apiVersion: networking.istio.io/v1alpha3  # Menentukan versi API yang digunakan untuk objek VirtualService di Istio.
+kind: VirtualService  # Jenis objek yang akan dibuat, yaitu "VirtualService."
+metadata:
+  name: order-virtual-service  # Nama objek VirtualService.
+spec:
+  hosts:
+  - "*"  # Host yang akan dicocokkan, dalam hal ini menerima semua host ("*").
+  gateways:
+  - order-service-gateway  # Gateway yang akan digunakan oleh VirtualService.
+  http:
+  - match:
+    - uri:
+        exact: /order  # Nilai http.match.uri.exact adalah /order
+    route:
+    - destination:
+        host: order-service  # Host yang menjadi target rute.
+        port:
+          number: 3000  # Port target yang akan digunakan untuk rute.
+

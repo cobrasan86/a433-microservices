@@ -1,0 +1,48 @@
+apiVersion: apps/v1  # Menentukan versi API yang digunakan untuk objek StatefulSet.
+kind: StatefulSet  # Jenis objek yang akan dibuat, yaitu "StatefulSet."
+metadata:
+  name: rabbitmq  # Nama objek StatefulSet.
+spec:
+  serviceName: "rabbitmq"  # Nama layanan yang akan digunakan oleh StatefulSet.
+  replicas: 1  # Jumlah replika yang akan dibuat, dalam hal ini satu replika.
+  selector:
+    matchLabels:
+      app: rabbitmq  # Label yang digunakan untuk memilih pod-pod oleh StatefulSet.
+  template:
+    metadata:
+      labels:
+        app: rabbitmq  # Label yang akan diberikan pada pod-pod oleh StatefulSet.
+    spec:
+      containers:
+      - name: rabbitmq  # Nama container.
+        image: rabbitmq:3.11-management  # Image container yang akan digunakan.
+        ports:
+        - containerPort: 5672  # Port yang akan digunakan untuk protokol RabbitMQ.
+        - containerPort: 15672  # Port yang akan digunakan untuk RabbitMQ Management UI.
+  volumeClaimTemplates:
+  - metadata:
+      name: data  # Nama template klaim volume.
+    spec:
+      accessModes: [ "ReadWriteOnce" ]  # Mode akses volume, dalam hal ini "ReadWriteOnce."
+      resources:
+        requests:
+          storage: 1Gi  # Permintaan penyimpanan volume, dalam hal ini 1 GiB.
+
+---
+
+apiVersion: v1  # Menentukan versi API yang digunakan untuk objek Service.
+kind: Service  # Jenis objek yang akan dibuat, yaitu "Service."
+metadata:
+  name: rabbitmq  # Nama objek Service.
+spec:
+  selector:
+    app: rabbitmq  # Label selektor yang digunakan untuk memilih pod yang akan terhubung ke layanan ini.
+  ports:
+    - name: rabbitmq  # Nama port pertama, digunakan untuk RabbitMQ.
+      protocol: TCP  # Protokol yang digunakan, dalam hal ini adalah TCP.
+      port: 5672  # Port layanan yang akan digunakan.
+      targetPort: 5672  # Port target yang akan diarahkan ke pod.
+    - name: rabbitmq-management  # Nama port kedua, digunakan untuk RabbitMQ Management UI.
+      protocol: TCP  # Protokol yang digunakan, dalam hal ini adalah TCP.
+      port: 15672  # Port layanan yang akan digunakan.
+      targetPort: 15672  # Port target yang akan diarahkan ke pod.
