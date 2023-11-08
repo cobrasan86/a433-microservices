@@ -1,0 +1,26 @@
+apiVersion: v1 #Menggunakan API v1(versi 1)
+kind: PersistentVolume #Mendefinisikan resource yang digunakan, dalam hal ini berarti menggunakan PersistentVolume
+metadata: #Memberikan metadata yang berisi informasi nama dan label
+  name: mongo-pv-volume #Menetapkan nama mongo-pv-volume
+  labels:
+    type: local #Menetapkan label type: local
+spec: #Mendefinisikan resource
+  storageClassName: manual #Menetapakan storageClassName dengan nilai manual
+  capacity: #Mendefinisikan kapasitas penyimpanan
+    storage: 20Gi #Menetapkan kapasistas penyimpanan sebesar 20GB
+  accessModes: #Menetapkan access mode
+    - ReadWriteOnce #Menggunakan access mode Read-write once
+  hostPath: #Menetapkan host path
+    path: "/mnt/data/mongo" #Menetapkan path host dengan path "/mnt/data/mongo"
+---
+apiVersion: v1 #Menggunakan API v1(versi 1)
+kind: PersistentVolumeClaim #Mendefinisikan resource yang digunakan, dalam hal ini berarti menggunakan PersistentVolumeClaim
+metadata: #Memberikan metadata yang berisi informasi nama 
+  name: mongo-pv-claim #Menetapkan nama mongo-pv-claim
+spec: #Mendefinisikan resource
+  storageClassName: manual #Menetapkan storage class name dengan nilai manual
+  accessModes: #Menetapkan access mode
+    - ReadWriteOnce #Menggunakan access mode Read-write once
+  resources:
+    requests: #Melakukan requests ke penyimpanan
+      storage: 20Gi #Meminta peyimpanan dengan kapasitas 20GB
