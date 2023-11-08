@@ -1,0 +1,12 @@
+apiVersion: v1 #Menggunakan API v1(versi 1)
+kind: Service #Mendefinisikan resource yang digunakan, dalam hal ini berarti menggunakan Service
+metadata: #Memberikan metadata yang berisi informasi nama dan label
+  name: mongo #Menetapkan nama mongo
+  labels:
+    app: mongo #Menetapkan label app: mongo
+spec: #Mendefinisikan resource
+  ports: #Menetapkan port
+  - port: 27017 #Menggunakan port 27017 (port default MongoDB)
+  selector: #Melakukan selector ke app: mongo
+    app: mongo
+  clusterIP: None #Membuat Service Mongo tidak mempunyai IP(tidak terikat dengan IP Cluster)
